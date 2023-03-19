@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rose.workbench.mapper.activityRemarkMapper">
+
+
+    <delete id="deleteActivityRemork">
+        delete from tbl_activity_remark where activityId in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="selectCount" resultType="java.lang.Integer">
+        select count(*) from tbl_activity_remark where activityId in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+    </select>
+
+
+</mapper>

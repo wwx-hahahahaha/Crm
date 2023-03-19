@@ -20,4 +20,6 @@ public interface activityMapper {
     int updateActivity(activity activity);
 
     activity seleActitityByid(String id);
+
+    activity seleActitityByidTwo(String id);
 }

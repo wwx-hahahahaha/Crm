@@ -37,36 +37,54 @@ public class activityServlet extends HttpServlet {
             selectActivityByid(request,response);
         } else if ("/workbench/activity/update.do".equals(path)) {
             update(request, response);
-
+        } else if ("/workbench/activity/selectActivity.do".equals(path)) {
+            selectActivity(request,response);
         }
     }
 
-    //根据id查询activity
+    //查询activity信息，展示到详情页
+    private void selectActivity(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String id = request.getParameter("id");
+        activityService o =(activityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
+        activity activity=o.selectActivity(id);
+        String s = JSON.toJSONString(activity);
+        response.getWriter().write(s);
+    }
+
+    //根据id查询activity和user
     private void selectActivityByid(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String id = request.getParameter("id");
         activityService ac =(activityService)new TransactionInvocationHandler(new activityServiceImpl()).nun();
-        activity activity = ac.selectActivityByid(id);
-        String s = JSON.toJSONString(activity);
+        Map<String,Object> map = ac.selectActivityByid(id);
+        String s = JSON.toJSONString(map);
         response.getWriter().write(s);
     }
 
     //修改activity方法
     private void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String id = request.getParameter("id");
+        String owner = request.getParameter("owner");
         String name = request.getParameter("name");
         String date = request.getParameter("startTime");
         String endDate = request.getParameter("endTime");
         String cost = request.getParameter("cost");
         String description = request.getParameter("describe");
+        String editBy=((user)request.getSession().getAttribute("user")).getName();
+        String editTime=DateTimeUtil.getSysTime();
+
         activity activity=new activity();
         activity.setId(id);
+        activity.setOwner(owner);
         activity.setName(name);
         activity.setCost(cost);
         activity.setStartDate(date);
         activity.setEndDate(endDate);
         activity.setDescription(description);
-         activityService ac =(activityService)new TransactionInvocationHandler(new activityServiceImpl()).nun();
-        System.out.println("哈哈哈啊哈大苏打"+activity);
+        activity.setEditBy(editBy);
+        activity.setEditTime(editTime);
+
+        System.out.println("哈哈哈哈哈哈哈哈哈"+activity);
+        activityService ac =(activityService)new TransactionInvocationHandler(new activityServiceImpl()).nun();
         boolean vo = ac.update(activity);
         Map<String,Object>map=new HashMap<>();
         map.put("bo",vo);

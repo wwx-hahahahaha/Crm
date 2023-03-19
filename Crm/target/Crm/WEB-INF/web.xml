@@ -33,6 +33,7 @@
     <url-pattern>/workbench/activity/delete.do</url-pattern>
     <url-pattern>/workbench/activity/update.do</url-pattern>
     <url-pattern>/workbench/activity/selectActivityByid.do</url-pattern>
+    <url-pattern>/workbench/activity/selectActivity.do</url-pattern>
 
   </servlet-mapping>
 </web-app>

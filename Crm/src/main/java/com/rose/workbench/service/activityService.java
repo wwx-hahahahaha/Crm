@@ -13,6 +13,8 @@ public interface activityService {
 
     boolean delete(String[] ids);
 
-    activity selectActivityByid(String id);
+    Map<String,Object> selectActivityByid(String id);
    boolean update(activity activity);
+
+    activity selectActivity(String id);
 }

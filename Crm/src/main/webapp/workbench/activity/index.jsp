@@ -57,7 +57,7 @@
                     }
                 })
             })
-            //点击保存按钮触发事件
+            //点击保存按钮触发事件,保存数据
             $("#Savebtn").click(function () {
                 $.ajax({
                     url: "http://localhost:8080/Crm/workbench/activity/saveActivity.do",
@@ -72,9 +72,17 @@
                     },
                     dataType: "JSON",
                     success: function (data) {
-                        if (data.bo){
+                        if (data.bo) {
                             alert("添加成功'")
-                            pageList(1,2)
+                            pageList(1, 2)
+                            //清空表单
+                            // $("#activityAddForm").submit();
+
+
+                            $("#activityAddForm")[0].reset()
+                            //关闭添加操作的模态窗口
+                            $("#createActivityModal").modal("hide")
+
                         }
                     }
                 })
@@ -171,7 +179,7 @@
                         if (qz.length == 0) {
                             alert("请先选择数据")
                         } else {
-                            //将id拼接起来,便于发送到后端
+                            //将id拼接起来,便于发送到后端进行删除操作
                             for (let i = 0; i < qz.length; i++) {
                                 id += "id=" + $(qz[i]).val()
                                 if (i < qz.length - 1) {
@@ -196,76 +204,80 @@
                         }
                     })
 
+
                     $(".abtn").click(function () {
-                        window.location.href = "workbench/activity/detail.jsp";
+                        let id=$(this).parent().prev().children("input").val()
+                        window.location.href = "workbench/activity/detail.jsp?id="+id;
                     })
 
-                    $("#update-btn").click(function (){
-                        let option='';
-                        $.each(data.list,function (i,e){
-                            option+="<option value='"+e.id+"'>"+e.owner+"</option>";
-                        })
-                        $("#edit-Owner").html(option);
-                        getByActivity();
-                        $("#edit-Owner").change(function (){
-                            getByActivity();
-                        })
-
-                    })
-                    //点击更新修改数据
-                    $("#update").click(function (){
-                        let id=$("#edit-Owner").val();
-                        if (confirm("是否修改")){
+                    //点击修改按钮绑定数据
+                    $("#update-btn").click(function () {
+                        let $xz=$("input[name=xz]:checked");
+                        if ($xz.length==0){
+                            alert("当前未选择")
+                        }else if ($xz.length>1){
+                            alert("只能选择一个以进行修改")
+                        }else{
+                            let id=$xz.val();
                             $.ajax({
-                                url:"http://localhost:8080/Crm/workbench/activity/update.do",
-                                type:"POST",
-                                data:{
-                                    "id":id,
-                                    "name":$.trim($("#edit-marketActivityName").val()),
-                                    "startTime":$.trim($("#edit-startTime").val()),
-                                    "endTime":$.trim($("#edit-endTime").val()),
-                                    "cost":$.trim($("#edit-cost").val()),
-                                    "describe":$.trim($("#edit-describe").val())
+                                url: "http://localhost:8080/Crm/workbench/activity/selectActivityByid.do",
+                                type: "POST",
+                                data: {
+                                    "id": id
                                 },
-                                dataType:"JSON",
-                                success:function (data){
-                                    if (data.bo){
+                                dataType: "JSON",
+                                success: function (data) {
+                                    let option="";
+                                    $.each(data.user,function (i,e){
+                                        option+="<option value='"+e.id+"'>"+e.name+"</option>";
+                                    })
+                                    $("#edit-Owner").html(option)
+
+                                    $("#edit-hiddenId").val(data.a.id)
+                                    $("#edit-marketActivityName").val(data.a.name)
+                                    $("#edit-startTime").val(data.a.startDate)
+                                    $("#edit-endTime").val(data.a.endDate)
+                                    $("#edit-cost").val(data.a.cost)
+                                    $("#edit-describe").val(data.a.description)
+                                }
+                            })
+                        }
+                    })
+
+
+                    //点击更新修改数据
+                    $("#update").click(function () {
+                        if (confirm("是否修改")) {
+                            $.ajax({
+                                url: "http://localhost:8080/Crm/workbench/activity/update.do",
+                                type: "POST",
+                                data: {
+                                    "id": $.trim($("#edit-hiddenId").val()),
+                                    "owner":$.trim($("#edit-Owner").val()),
+                                    "name": $.trim($("#edit-marketActivityName").val()),
+                                    "startTime": $.trim($("#edit-startTime").val()),
+                                    "endTime": $.trim($("#edit-endTime").val()),
+                                    "cost": $.trim($("#edit-cost").val()),
+                                    "describe": $.trim($("#edit-describe").val())
+                                },
+                                dataType: "JSON",
+                                success: function (data) {
+                                    if (data.bo) {
                                         alert("修改成功")
-                                        pageList(1,2)
+                                        pageList(1, 2)
                                     }
                                 }
                             })
-                            pageList(1,2)
+                            pageList(1, 2)
                         }
 
                     })
                 }
             })
         };
-        //根据id查询activity将数据填入修改框中的方法
-        function getByActivity(){
-            let id=$("#edit-Owner").val();
-            $.ajax({
-                url:"http://localhost:8080/Crm/workbench/activity/selectActivityByid.do",
-                type:"POST",
-                data:{
-                    "id":id,
-                    "name":$.trim($("#edit-marketActivityName").val()),
-                    "startTime":$.trim($("#edit-startTime").val()),
-                    "endTime":$.trim($("#edit-endTime").val()),
-                    "cost":$.trim($("#edit-cost").val()),
-                    "describe":$.trim($("#edit-describe").val())
-                },
-                dataType:"JSON",
-                success:function (data){
-                        $("#edit-marketActivityName").val(data.name)
-                        $("#edit-startTime").val(data.startDate)
-                        $("#edit-endTime").val(data.endDate)
-                        $("#edit-cost").val(data.cost)
-                        $("#edit-describe").val(data.description)
-                }
-            })
-        }
+
+        //根据id查询activity和user将数据填入修改框中的方法
+
     </script>
 </head>
 <body>
@@ -287,7 +299,7 @@
             </div>
             <div class="modal-body">
 
-                <form class="form-horizontal" role="form">
+                <form class="form-horizontal" role="form" id="activityAddForm">
 
                     <div class="form-group">
                         <label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span
@@ -352,15 +364,15 @@
             <div class="modal-body">
 
                 <form class="form-horizontal" role="form">
-
+                    <input type="hidden" id="edit-hiddenId">
                     <div class="form-group">
                         <label for="edit-Owner" class="col-sm-2 control-label">所有者<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-Owner">
-<%--                                <option>zhangsan</option>--%>
-<%--                                <option>lisi</option>--%>
-<%--                                <option>wangwu</option>--%>
+                                <%--                                <option>zhangsan</option>--%>
+                                <%--                                <option>lisi</option>--%>
+                                <%--                                <option>wangwu</option>--%>
                             </select>
                         </div>
                         <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span
@@ -384,7 +396,7 @@
                     <div class="form-group">
                         <label for="edit-cost" class="col-sm-2 control-label">成本</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-cost" >
+                            <input type="text" class="form-control" id="edit-cost">
                         </div>
                     </div>
 
@@ -457,8 +469,9 @@
             <div class="btn-group" style="position: relative; top: 18%;">
                 <button type="button" class="btn btn-primary" id="add"><span class="glyphicon glyphicon-plus"></span> 创建
                 </button>
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal" id="update-btn"><span
-                        class="glyphicon glyphicon-pencil" ></span> 修改
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"
+                        id="update-btn"><span
+                        class="glyphicon glyphicon-pencil"></span> 修改
                 </button>
                 <button type="button" class="btn btn-danger" id="delete"><span class="glyphicon glyphicon-minus"></span>
                     删除

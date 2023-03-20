@@ -3,13 +3,13 @@ package com.rose.workbench.domain;
 public class activity_remark {
 //    private;
     private String id ;
-    private String noteContent ;
-    private String createTime  ;
-    private String createBy    ;
-    private String editTime    ;
-    private String editBy      ;
-    private String editFlag    ;
-    private String activityId  ;
+    private String noteContent ;//评论内容
+    private String createTime;//创建时间
+    private String createBy;//创建人
+    private String editTime;//修改时间
+    private String editBy;//修改人
+    private String editFlag;//是否被修改过,0表示未被修改 ,1表示修改过
+    private String activityId;//外键
 
 
     public activity_remark() {

@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
+import com.rose.workbench.domain.activity_remark;
 import com.rose.workbench.service.*;
 import com.rose.workbench.service.impl.activityServiceImpl;
 
@@ -39,7 +40,83 @@ public class activityServlet extends HttpServlet {
             update(request, response);
         } else if ("/workbench/activity/selectActivity.do".equals(path)) {
             selectActivity(request,response);
+        }else if ("/workbench/activity/selectRemark.do".equals(path)){
+            selectRemark(request,response);
+        }else if ("/workbench/activity/deleteRemark.do".equals(path)){
+            deleteRemark(request,response);
+        }else if ("/workbench/activity/saveRemark.do".equals(path)){
+            savaRemark(request,response);
+        } else if ("/workbench/activity/updateRemark.do".equals(path)) {
+            updateRemark(request,response);
         }
+    }
+
+    //修改备注方法
+    private void updateRemark(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String id = request.getParameter("id");
+        String remark = request.getParameter("remark");
+        String editBy=((user)request.getSession().getAttribute("user")).getName();
+        String editTime=DateTimeUtil.getSysTime();
+        String editFlag="1";
+
+        activity_remark remark1=new activity_remark();
+        remark1.setId(id);
+        remark1.setNoteContent(remark);
+        remark1.setEditBy(editBy);
+        remark1.setEditTime(editTime);
+        remark1.setEditFlag(editFlag);
+
+        activityService service=(activityService) new TransactionInvocationHandler(new  activityServiceImpl()).nun();
+        boolean bo=service.updateRemark(remark1);
+
+        Map<String,Object>map=new HashMap<>();
+        map.put("bo",bo);
+        map.put("list",remark1);
+        String s = JSON.toJSONString(map);
+        response.getWriter().write(s);
+    }
+
+    //增加评论方法
+    private void savaRemark(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String aid = request.getParameter("id");
+        String content = request.getParameter("remark");
+        String id=UUIDUtil.getUUID();
+        String createBy=((user)request.getSession().getAttribute("user")).getName();
+        String createTime=DateTimeUtil.getSysTime();
+        String editFlag="0";
+
+        activity_remark remarks=new activity_remark();
+        remarks.setId(id);
+        remarks.setActivityId(aid);
+        remarks.setNoteContent(content);
+        remarks.setCreateBy(createBy);
+        remarks.setCreateTime(createTime);
+        remarks.setEditFlag(editFlag);
+
+        activityService service = (activityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
+        Map<String,Object> map=service.SavaAndSelectRemark(remarks);
+        String s = JSON.toJSONString(map);
+        response.getWriter().write(s);
+    }
+
+    //删除评论方法
+    private void deleteRemark(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String id = request.getParameter("id");
+        activityService service = (activityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
+        boolean bo=service.deleteRemark(id);
+        Map<String,Object>map=new HashMap<>();
+        map.put("bo",bo);
+        String s = JSON.toJSONString(map);
+        response.getWriter().write(s);
+    }
+
+    //查询备注
+    private void selectRemark(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String id = request.getParameter("id");
+        activityService o = (activityService)new TransactionInvocationHandler(new activityServiceImpl()).nun();
+        List<activity_remark> remark=o.getRemark(id);
+        String s = JSON.toJSONString(remark);
+        response.getWriter().write(s);
     }
 
     //查询activity信息，展示到详情页
@@ -83,14 +160,12 @@ public class activityServlet extends HttpServlet {
         activity.setEditBy(editBy);
         activity.setEditTime(editTime);
 
-        System.out.println("哈哈哈哈哈哈哈哈哈"+activity);
         activityService ac =(activityService)new TransactionInvocationHandler(new activityServiceImpl()).nun();
         boolean vo = ac.update(activity);
         Map<String,Object>map=new HashMap<>();
         map.put("bo",vo);
         String s = JSON.toJSONString(map);
         response.getWriter().write(s);
-        System.out.println(map);
     }
 
     //删除市场活动方法

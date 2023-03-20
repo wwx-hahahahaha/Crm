@@ -2,6 +2,7 @@ package com.rose.workbench.service;
 
 import com.rose.vo.vo;
 import com.rose.workbench.domain.activity;
+import com.rose.workbench.domain.activity_remark;
 
 import java.util.List;
 import java.util.Map;
@@ -17,4 +18,12 @@ public interface activityService {
    boolean update(activity activity);
 
     activity selectActivity(String id);
+
+     List<activity_remark> getRemark(String id);
+
+    boolean deleteRemark(String id);
+
+    Map<String, Object> SavaAndSelectRemark(activity_remark remarks);
+
+    boolean updateRemark(activity_remark remark1);
 }

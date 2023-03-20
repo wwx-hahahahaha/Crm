@@ -34,6 +34,9 @@
     <url-pattern>/workbench/activity/update.do</url-pattern>
     <url-pattern>/workbench/activity/selectActivityByid.do</url-pattern>
     <url-pattern>/workbench/activity/selectActivity.do</url-pattern>
-
+    <url-pattern>/workbench/activity/selectRemark.do</url-pattern>
+    <url-pattern>/workbench/activity/deleteRemark.do</url-pattern>
+    <url-pattern>/workbench/activity/saveRemark.do</url-pattern>
+    <url-pattern>/workbench/activity/updateRemark.do</url-pattern>
   </servlet-mapping>
 </web-app>

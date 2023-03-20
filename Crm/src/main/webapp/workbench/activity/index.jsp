@@ -215,6 +215,7 @@
                         let $xz=$("input[name=xz]:checked");
                         if ($xz.length==0){
                             alert("当前未选择")
+                            $("#editActivityModal").modal("hide");
                         }else if ($xz.length>1){
                             alert("只能选择一个以进行修改")
                         }else{

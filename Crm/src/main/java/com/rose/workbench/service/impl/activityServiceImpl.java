@@ -8,14 +8,13 @@ import com.rose.workbench.domain.activity;
 import com.rose.workbench.domain.activity_remark;
 import com.rose.workbench.mapper.activityMapper;
 import com.rose.workbench.mapper.activityRemarkMapper;
-import com.rose.workbench.service.activityService;
+import com.rose.workbench.service.ActivityService;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class activityServiceImpl implements activityService {
+public class activityServiceImpl implements ActivityService {
     private activityMapper mapper=SqlSessionUtils.getSessiom().getMapper(activityMapper.class);
     private activityRemarkMapper remarkMapper=SqlSessionUtils.getSessiom().getMapper(activityRemarkMapper.class);
 

@@ -7,7 +7,7 @@ import com.rose.workbench.domain.activity_remark;
 import java.util.List;
 import java.util.Map;
 
-public interface activityService {
+public interface ActivityService {
     boolean SavaActivity(activity activity);
 
     vo getActivity(Map<String, Object> map);

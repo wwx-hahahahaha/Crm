@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rose.settings.mapper.dicvalueMapper">
+
+
+    <select id="sele" resultType="com.rose.settings.domain.dicValue">
+        select * from tbl_dic_value where typeCode=#{name};
+    </select>
+</mapper>

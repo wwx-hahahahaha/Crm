@@ -9,7 +9,9 @@
 >
   <display-name>Archetype Created Web Application</display-name>
 
+
 <!--  用户控制器-->
+
   <servlet>
     <servlet-name>UserController</servlet-name>
     <servlet-class>com.rose.settings.web.servlet.UserServlet</servlet-class>
@@ -38,5 +40,14 @@
     <url-pattern>/workbench/activity/deleteRemark.do</url-pattern>
     <url-pattern>/workbench/activity/saveRemark.do</url-pattern>
     <url-pattern>/workbench/activity/updateRemark.do</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>ClueController</servlet-name>
+    <servlet-class>com.rose.workbench.web.servlet.ClueServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ClueController</servlet-name>
+    <url-pattern>/workbench/clue/selectUser.do</url-pattern>
   </servlet-mapping>
 </web-app>

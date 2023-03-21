@@ -1,15 +1,16 @@
 package com.rose.settings.web.servlet;
 
 import com.alibaba.fastjson2.JSON;
-import com.rose.exception.LoginExption;
+import com.rose.settings.domain.dicType;
+import com.rose.settings.domain.dicValue;
 import com.rose.settings.domain.user;
+import com.rose.settings.service.dicService;
+import com.rose.settings.service.impl.dicServiceImpl;
 import com.rose.settings.service.impl.userServiceImpl;
 import com.rose.settings.service.userServlce;
 import com.rose.utils.ServiceFactory;
-import com.rose.utils.TransactionInvocationHandler;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 //@WebServlet("/settings/user/seleone.do")
 public class UserServlet extends HttpServlet {
@@ -42,6 +44,7 @@ public class UserServlet extends HttpServlet {
     public void login(HttpServletRequest request,HttpServletResponse response) throws IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
+
         //获取本地ip地址
         String addr = InetAddress.getLocalHost().getHostAddress();
         System.out.println(addr);
@@ -54,6 +57,12 @@ public class UserServlet extends HttpServlet {
         try {
             user = o.seleuser(username, password, addr);
 //            if (user!=null){
+            dicService service= (dicService) ServiceFactory.getService(new dicServiceImpl());
+            Map<String, List<dicValue>> selevalue = service.selevalue();
+            Set<String> set = selevalue.keySet();
+            for (String s : set) {
+                this.getServletContext().setAttribute(s,selevalue.get(s));
+            }
             //登录成功将user保存到session域中
                 request.getSession().setAttribute("user",user);
                 //将要响应给前面的数据true封装到map集合里面

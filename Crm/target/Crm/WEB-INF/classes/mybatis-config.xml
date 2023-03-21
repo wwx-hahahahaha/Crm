@@ -24,9 +24,11 @@
     </environments>
     <mappers>
         <mapper resource="com/rose/settings/mapper/usermapper.xml"/>
-<!--        <package name="com.rose.settings.mapper"/>-->
-<!--        <package name="com.rose.workbench.mapper"/>-->
-        <mapper resource="com/rose/workbench/mapper/activityMapper.xml"/>
-        <mapper resource="com/rose/workbench/mapper/activityRemarkMapper.xml"/>
+        <mapper resource="com/rose/settings/mapper/dictypemapper.xml"/>
+        <mapper resource="com/rose/settings/mapper/dicvalueMapper.xml"/>
+        <!--        <package name="com.rose.settings.mapper"/>-->
+        <package name="com.rose.workbench.mapper"/>
+<!--        <mapper resource="com/rose/workbench/mapper/activityMapper.xml"/>-->
+<!--        <mapper resource="com/rose/workbench/mapper/activityRemarkMapper.xml"/>-->
     </mappers>
 </configuration>

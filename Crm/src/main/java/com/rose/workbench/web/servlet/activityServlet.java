@@ -66,7 +66,7 @@ public class activityServlet extends HttpServlet {
         remark1.setEditTime(editTime);
         remark1.setEditFlag(editFlag);
 
-        activityService service=(activityService) new TransactionInvocationHandler(new  activityServiceImpl()).nun();
+        ActivityService service=(ActivityService) new TransactionInvocationHandler(new  activityServiceImpl()).nun();
         boolean bo=service.updateRemark(remark1);
 
         Map<String,Object>map=new HashMap<>();
@@ -93,7 +93,7 @@ public class activityServlet extends HttpServlet {
         remarks.setCreateTime(createTime);
         remarks.setEditFlag(editFlag);
 
-        activityService service = (activityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
+        ActivityService service = (ActivityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
         Map<String,Object> map=service.SavaAndSelectRemark(remarks);
         String s = JSON.toJSONString(map);
         response.getWriter().write(s);
@@ -102,7 +102,7 @@ public class activityServlet extends HttpServlet {
     //删除评论方法
     private void deleteRemark(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String id = request.getParameter("id");
-        activityService service = (activityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
+        ActivityService service = (ActivityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
         boolean bo=service.deleteRemark(id);
         Map<String,Object>map=new HashMap<>();
         map.put("bo",bo);
@@ -113,7 +113,7 @@ public class activityServlet extends HttpServlet {
     //查询备注
     private void selectRemark(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String id = request.getParameter("id");
-        activityService o = (activityService)new TransactionInvocationHandler(new activityServiceImpl()).nun();
+        ActivityService o = (ActivityService)new TransactionInvocationHandler(new activityServiceImpl()).nun();
         List<activity_remark> remark=o.getRemark(id);
         String s = JSON.toJSONString(remark);
         response.getWriter().write(s);
@@ -122,7 +122,7 @@ public class activityServlet extends HttpServlet {
     //查询activity信息，展示到详情页
     private void selectActivity(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String id = request.getParameter("id");
-        activityService o =(activityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
+        ActivityService o =(ActivityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
         activity activity=o.selectActivity(id);
         String s = JSON.toJSONString(activity);
         response.getWriter().write(s);
@@ -131,7 +131,7 @@ public class activityServlet extends HttpServlet {
     //根据id查询activity和user
     private void selectActivityByid(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String id = request.getParameter("id");
-        activityService ac =(activityService)new TransactionInvocationHandler(new activityServiceImpl()).nun();
+        ActivityService ac =(ActivityService)new TransactionInvocationHandler(new activityServiceImpl()).nun();
         Map<String,Object> map = ac.selectActivityByid(id);
         String s = JSON.toJSONString(map);
         response.getWriter().write(s);
@@ -160,7 +160,7 @@ public class activityServlet extends HttpServlet {
         activity.setEditBy(editBy);
         activity.setEditTime(editTime);
 
-        activityService ac =(activityService)new TransactionInvocationHandler(new activityServiceImpl()).nun();
+        ActivityService ac =(ActivityService)new TransactionInvocationHandler(new activityServiceImpl()).nun();
         boolean vo = ac.update(activity);
         Map<String,Object>map=new HashMap<>();
         map.put("bo",vo);
@@ -172,7 +172,7 @@ public class activityServlet extends HttpServlet {
     private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //
         String[] ids = request.getParameterValues("id");
-        activityService nun =(activityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
+        ActivityService nun =(ActivityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
         boolean b = nun.delete(ids);
         Map<String,Object>map=new HashMap<>();
         map.put("bo",b);
@@ -199,7 +199,7 @@ public class activityServlet extends HttpServlet {
         map.put("startDate",startDate);
         map.put("endDate",endDate);
 
-        activityService o = (activityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
+        ActivityService o = (ActivityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
         vo v=o.getActivity(map);
         String s = JSON.toJSONString(v);
         response.getWriter().write(s);
@@ -232,7 +232,7 @@ public class activityServlet extends HttpServlet {
         activity.setCreateBy(createBy);
 
 //        动态代理的方式调用方法，传入对象A,使用对象A的增强方法B;
-        activityService nun =(activityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
+        ActivityService nun =(ActivityService) new TransactionInvocationHandler(new activityServiceImpl()).nun();
         boolean s = nun.SavaActivity(activity);
         Map<String,Object>map=new HashMap<>();
         map.put("bo",s);

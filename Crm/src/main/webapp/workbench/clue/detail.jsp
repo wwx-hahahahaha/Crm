@@ -56,6 +56,10 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		});
 
 
+
+		PageList();
+
+		// 点击编辑按钮,向表单中绑定数据
 		$("#updateBtn").click(function (){
 			$.ajax({
 				url:"http://localhost:8080/Crm/workbench/clue/selectUser.do",
@@ -72,8 +76,149 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 			$("#editClueModal").modal("show")
 		})
+		// 展示关联市场活动
+		$("#campaigns").click(function () {
+			$.ajax({
+				url:"workbench/clue/selectActivityNotById.do",
+				type: "GET",
+				dataType: "JSON",
+				data:{
+					"cid":"${clue.id}"
+				},
+				success:function (data) {
+					let html='';
+					$.each(data,function (i, e) {
+						html+='<tr>'
+						html+='	<td><input type="checkbox" value="'+e.id+'" name="xz"/></td>'
+						html+='	<td>'+e.name+'</td>'
+						html+='	<td>'+e.startDate+'</td>'
+						html+='	<td>'+e.endDate+'</td>'
+						html+='	<td>'+e.owner+'</td>'
+						html+='</tr>'
+					})
+					$("#tbody").html(html)
+					//全选选中绑定所有选择框
+					$("#qx").click(function () {
+						$("input[name=xz]").prop("checked", this.checked)
+					})
+					//如果所有选择框选中则全选被选中
+					$("#tbody").on("click", $("input[name=xz]"), function () {
+						$("#qx").prop("checked", $("input[name=xz]").length == $("input[name=xz]:checked").length)
+					})
+				}
+			})
+		})
+
+		//关联市场活动
+		$("#primary-Btn").click(function (){
+			let id='';
+			let cid="${clue.id}"
+			let qz = $("input[name=xz]:checked")
+			if (qz.length == 0) {
+				alert("请先选择数据")
+			} else{
+				//将id拼接起来,便于发送到后端进行删除操作
+				for (let i = 0; i < qz.length; i++) {
+					id += "id=" + $(qz[i]).val()
+					if (i < qz.length - 1) {
+						id += "&"
+					}
+				}
+				if (confirm("是否添加关联")){
+					let xml=new XMLHttpRequest();
+					xml.addEventListener("readystatechange",function () {
+						if (xml.status==200&&xml.readyState==4){
+							if (xml.responseText>0){
+								alert("关联成功")
+								PageList();
+							}
+						}
+					})
+					xml.open("POST","http://localhost:8080/Crm/workbench/clue/saveActivityRelation.do?cid="+cid+"&"+id,true)
+					xml.setRequestHeader("Content-type","application/x-www-form-urlencoded")
+					xml.send();
+				}
+			}
+			PageList()
+		})
+
+		//市场活动模糊查询
+		$("#control").keydown(function (e){
+			if (e.keyCode==13){
+				let a=$("#control").val();
+				$.ajax({
+					url:"workbench/clue/selectActivityLikeNotById.do",
+					type:"GET",
+					dataType:"JSON",
+					data:{
+						"cid":"${clue.id}",
+						"text":a
+					},
+					success:function (data) {
+						let html='';
+						$.each(data,function (i, e) {
+							html+='<tr>'
+							html+='	<td><input type="checkbox" value="'+e.id+'" name="xz"/></td>'
+							html+='	<td>'+e.name+'</td>'
+							html+='	<td>'+e.startDate+'</td>'
+							html+='	<td>'+e.endDate+'</td>'
+							html+='	<td>'+e.owner+'</td>'
+							html+='</tr>'
+						})
+						$("#tbody").html(html)
+					}
+				})
+				}
+			return false;
+		})
 	});
-	
+
+	//展现市场活动方法
+	function PageList(){
+		let id="${clue.id}"
+		$.ajax({
+				url:"workbench/clue/selectActivity.do",
+						type: "GET",
+						dataType: "JSON",
+						data:{
+					"id":id
+				},
+				success:function (data) {
+					let html="";
+					$.each(data,function (i, e) {
+						html+='<tr>'
+						html+='<td>'+e.name+'</td>'
+						html+='<td>'+e.startDate+'</td>'
+						html+='<td>'+e.endDate+'</td>'
+						html+='<td>'+e.owner+'</td>'
+						html+='<td><a href="javascript:void(0);" onclick=Delete(\''+e.id+'\') style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>'
+						html+='</tr>'
+					})
+					$("#Listbody").html(html)
+			}
+		})
+	}
+
+	//解除关联
+	function Delete(id){
+		$.ajax({
+			url:"workbench/clue/deleteClueActivityRelation.do",
+			type:"POST",
+			dataType: "JSON",
+			data:{
+				"aid":id,
+				"cid":"${clue.id}"
+			},
+			success:function (data) {
+				if (data.bo){
+					alert("解除成功")
+					PageList();
+				}else{
+					alert("解除失败")
+				}
+			}
+		})
+	}
 </script>
 
 </head>
@@ -87,13 +232,13 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">×</span>
 					</button>
-					<h4 class="modal-title">关联市场活动</h4>
+					<h4 class="modal-title">关联市场活动123</h4>
 				</div>
 				<div class="modal-body">
 					<div class="btn-group" style="position: relative; top: 18%; left: 8px;">
 						<form class="form-inline" role="form">
 						  <div class="form-group has-feedback">
-						    <input type="text" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
+						    <input type="text" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询" id="control">
 						    <span class="glyphicon glyphicon-search form-control-feedback"></span>
 						  </div>
 						</form>
@@ -101,7 +246,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					<table id="activityTable" class="table table-hover" style="width: 900px; position: relative;top: 10px;">
 						<thead>
 							<tr style="color: #B3B3B3;">
-								<td><input type="checkbox"/></td>
+								<td><input type="checkbox" id="qx"/></td>
 								<td>名称</td>
 								<td>开始日期</td>
 								<td>结束日期</td>
@@ -109,27 +254,20 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 								<td></td>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
-								<td><input type="checkbox"/></td>
-								<td>发传单</td>
-								<td>2020-10-10</td>
-								<td>2020-10-20</td>
-								<td>zhangsan</td>
-							</tr>
-							<tr>
-								<td><input type="checkbox"/></td>
-								<td>发传单</td>
-								<td>2020-10-10</td>
-								<td>2020-10-20</td>
-								<td>zhangsan</td>
-							</tr>
+						<tbody id="tbody">
+<%--							<tr>--%>
+<%--								<td><input type="checkbox"/></td>--%>
+<%--								<td>发传单</td>--%>
+<%--								<td>2020-10-10</td>--%>
+<%--								<td>2020-10-20</td>--%>
+<%--								<td>zhangsan</td>--%>
+<%--							</tr>--%>
 						</tbody>
 					</table>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">关联</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="primary-Btn">关联</button>
 				</div>
 			</div>
 		</div>
@@ -276,7 +414,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	<!-- 大标题 -->
 	<div style="position: relative; left: 40px; top: -30px;">
 		<div class="page-header">
-			<h3>李四先生 <small>动力节点</small></h3>
+			<h3>${clue.fullname}<small>${clue.company}</small></h3>
 		</div>
 		<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
 			<button type="button" class="btn btn-default" onclick="window.location.href='workbench/clue/convert.jsp';"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
@@ -289,59 +427,59 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	<div style="position: relative; top: -70px;">
 		<div style="position: relative; left: 40px; height: 30px;">
 			<div style="width: 300px; color: gray;">名称</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>李四先生</b></div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${clue.fullname}</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">所有者</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>zhangsan</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${clue.owner}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 10px;">
 			<div style="width: 300px; color: gray;">公司</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>动力节点</b></div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${clue.company}</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">职位</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>CTO</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${clue.job}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 20px;">
 			<div style="width: 300px; color: gray;">邮箱</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>lisi@bjpowernode.com</b></div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${clue.email}</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">公司座机</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>010-84846003</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${clue.phone}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 30px;">
 			<div style="width: 300px; color: gray;">公司网站</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>http://www.bjpowernode.com</b></div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${clue.website}</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">手机</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>12345678901</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${clue.mphone}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 40px;">
 			<div style="width: 300px; color: gray;">线索状态</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>已联系</b></div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${clue.state}</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">线索来源</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>广告</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${clue.source}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 50px;">
 			<div style="width: 300px; color: gray;">创建者</div>
-			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>zhangsan&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">2017-01-18 10:10:10</small></div>
+			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${clue.createBy}</b><small style="font-size: 10px; color: gray;">${clue.createTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 60px;">
 			<div style="width: 300px; color: gray;">修改者</div>
-			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>zhangsan&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">2017-01-19 10:10:10</small></div>
+			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${clue.editBy}</b><small style="font-size: 10px; color: gray;">${clue.editTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 70px;">
 			<div style="width: 300px; color: gray;">描述</div>
 			<div style="width: 630px;position: relative; left: 200px; top: -20px;">
 				<b>
-					这是一条线索的描述信息
+					${clue.description}
 				</b>
 			</div>
 			<div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
@@ -350,21 +488,21 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			<div style="width: 300px; color: gray;">联系纪要</div>
 			<div style="width: 630px;position: relative; left: 200px; top: -20px;">
 				<b>
-					这条线索即将被转换
+					${clue.contactSummary}
 				</b>
 			</div>
 			<div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 90px;">
 			<div style="width: 300px; color: gray;">下次联系时间</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>2017-05-01</b></div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${clue.nextContactTime}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -20px; "></div>
 		</div>
         <div style="position: relative; left: 40px; height: 30px; top: 100px;">
             <div style="width: 300px; color: gray;">详细地址</div>
             <div style="width: 630px;position: relative; left: 200px; top: -20px;">
                 <b>
-                    北京大兴大族企业湾
+                    ${clue.address}
                 </b>
             </div>
             <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
@@ -433,27 +571,27 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							<td></td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td>发传单</td>
-							<td>2020-10-10</td>
-							<td>2020-10-20</td>
-							<td>zhangsan</td>
-							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
-						</tr>
-						<tr>
-							<td>发传单</td>
-							<td>2020-10-10</td>
-							<td>2020-10-20</td>
-							<td>zhangsan</td>
-							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
-						</tr>
+					<tbody id="Listbody">
+<%--						<tr>--%>
+<%--							<td>发传单</td>--%>
+<%--							<td>2020-10-10</td>--%>
+<%--							<td>2020-10-20</td>--%>
+<%--							<td>zhangsan</td>--%>
+<%--							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>--%>
+<%--						</tr>--%>
+<%--						<tr>--%>
+<%--							<td>发传单</td>--%>
+<%--							<td>2020-10-10</td>--%>
+<%--							<td>2020-10-20</td>--%>
+<%--							<td>zhangsan</td>--%>
+<%--							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>--%>
+<%--						</tr>--%>
 					</tbody>
 				</table>
 			</div>
 			
 			<div>
-				<a href="javascript:void(0);" data-toggle="modal" data-target="#bundModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
+				<a href="javascript:void(0);" id="campaigns" data-toggle="modal" data-target="#bundModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
 			</div>
 		</div>
 	</div>

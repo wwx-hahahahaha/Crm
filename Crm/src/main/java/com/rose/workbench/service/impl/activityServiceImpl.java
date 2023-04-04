@@ -127,5 +127,17 @@ public class activityServiceImpl implements ActivityService {
         return false;
     }
 
+    @Override
+    public List<activity> sele(String id) {
+        List<activity>list=mapper.sele(id);
+        return list;
+    }
+
+    @Override
+    public List<activity> selectActivityLikeNotById(String cid, String text) {
+        List<activity> list=mapper.selectActivityLikeNotById(cid,text);
+        return list;
+    }
+
 
 }

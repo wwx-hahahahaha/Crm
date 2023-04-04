@@ -22,6 +22,18 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 <script type="text/javascript">
 
 	$(function(){
+		//表单时间插件
+		$(".time").datetimepicker({
+			minView: "month",
+			language: 'zh-CN',
+			format: 'yyyy-mm-dd',
+			autoclose: true,
+			todayBtn: true,
+			pickerPosition: "top-left"
+		});
+
+		PageList(1,2)
+		//点击修改往表单里面绑定数据
 		$("#updateBtn").click(function (){
 			$.ajax({
 				url:"http://localhost:8080/Crm/workbench/clue/selectUser.do",
@@ -30,7 +42,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				success:function (data) {
 					let html="";
 					$.each(data,function (i,e){
-						html+="<option>"+e.name+"</option>"
+						html+="<option value='"+e.id+"'>"+e.name+"</option>"
 					})
 					$("#edit-clueOwner").html(html);
 				}
@@ -39,6 +51,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			$("#editClueModal").modal("show")
 		})
 
+		// 点击创建按钮绑定数据
 		$("#saveBtn").click(function (){
 			$.ajax({
 				url:"http://localhost:8080/Crm/workbench/clue/selectUser.do",
@@ -47,14 +60,82 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				success:function (data) {
 					let html="";
 					$.each(data,function (i,e){
-						html+="<option>"+e.name+"</option>"
+						html+="<option value='"+e.id+"'>"+e.name+"</option>"
 					})
-					$("#create-clueOwner").html(html);
+					$("#create-Owner").html(html);
 				}
 			})
+
 			$("#createClueModal").modal("show")
 		})
+
+		$("#selectBtn").click(function () {
+			alert($("#select-source").val())
+			PageList(1,2)
+		})
+		//增加线索列表
+		$("#SaveClueBtn").click(function (){
+			$.ajax({
+				url:"http://localhost:8080/Crm/workbench/clue/SaveClue.do",
+				type:"POST",
+				data:{
+					"create-Owner":$.trim($("#create-Owner").val()),//所有者
+					"create-company":$.trim($("#create-company").val()),//公司名称
+					"create-appellation":$.trim($("#create-appellation").val()),//称呼
+					"create-fullname":$.trim($("#create-fullname").val()),//姓名
+					"create-job":$.trim($("#create-job").val()),//职位
+					"create-email":$.trim($("#create-email").val()),//邮箱
+					"create-phone":$.trim($("#create-phone").val()),//公司电话
+					"create-website":$.trim($("#create-website").val()),//公司网站
+					"create-mphone":$.trim($("#create-mphone").val()),//手机
+					"create-status":$.trim($("#create-status").val()),//线索状态
+					"create-source":$.trim($("#create-source").val()),//线索来源
+					"create-description":$.trim($("#create-description").val()),//线索描述
+					"create-contactSummary":$.trim($("#create-contactSummary").val()),//联系纪要
+					"create-nextContactTime":$.trim($("#create-nextContactTime").val()),//下次联系时间
+					"create-address":$.trim($("#create-address").val())//地址
+				},
+				dataType:"text",
+				success:function (data) {
+					if(data=="添加成功"){
+						$("#create-form").submit();
+					}
+				}
+			})
+		})
 	});
+	function PageList(pageNo,pageSize){
+		$.ajax({
+			url:"workbench/clue/selectClue.do",
+			data: {
+				"pageNo":pageNo,
+				"pageSize":pageSize,
+				"select-name":$.trim($("#select-name").val()),//名称
+				"select-company":$.trim($("#select-company").val()),//公司
+				"select-phone":$.trim($("#select-phone").val()),//公司座机
+				"select-owner":$.trim($("#select-owner").val()),//所有者
+				"select-mphone":$.trim($("#select-mphone").val()),//手机
+			},
+			type:"GET",
+			dataType:"JSON",
+			success:function (data) {
+				let html='';
+				$.each(data,function (i,e) {
+				html+='<tr>'
+				html+='<td><input type="checkbox"  value="'+e.id+'"/></td>'
+				html+='<td><a style="text-decoration: none; cursor: pointer;" href="workbench/clue/selectClueById.do?id='+e.id+'">'+e.fullname+'</a></td>'
+				html+='<td>'+e.company+'</td>'
+				html+='<td>'+e.phone+'</td>'
+				html+='<td>'+e.mphone+'</td>'
+				html+='<td>'+e.source+'</td>'
+				html+='<td>'+e.owner+'</td>'
+				html+='<td>'+e.state+'</td>'
+				html+='</tr>'
+				})
+				$("#tbody").html(html)
+			}
+		})
+	}
 	
 </script>
 </head>
@@ -70,13 +151,13 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					</button>
 					<h4 class="modal-title" id="myModalLabel">创建线索</h4>
 				</div>
-				<div class="modal-body">
-					<form class="form-horizontal" role="form">
+				<div class="modal-body" id="create-body">
+					<form class="form-horizontal" role="form" id="create-form">
 					
 						<div class="form-group">
-							<label for="create-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-Owner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-clueOwner">
+								<select class="form-control" id="create-Owner">
 
 								</select>
 							</div>
@@ -87,17 +168,17 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						</div>
 						
 						<div class="form-group">
-							<label for="create-call" class="col-sm-2 control-label">称呼</label>
+							<label for="create-appellation" class="col-sm-2 control-label">称呼</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-call">
+								<select class="form-control" id="create-appellation">
 									<c:forEach items="${applicationScope.appellation}" var="appellation">
 										<option value="${appellation.value}">${appellation.text}</option>
 									</c:forEach>
 								</select>
 							</div>
-							<label for="create-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-fullname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-surname">
+								<input type="text" class="form-control" id="create-fullname">
 							</div>
 						</div>
 						
@@ -151,9 +232,9 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						
 
 						<div class="form-group">
-							<label for="create-describe" class="col-sm-2 control-label">线索描述</label>
+							<label for="create-description" class="col-sm-2 control-label">线索描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="create-describe"></textarea>
+								<textarea class="form-control" rows="3" id="create-description"></textarea>
 							</div>
 						</div>
 						
@@ -169,7 +250,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							<div class="form-group">
 								<label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
 								<div class="col-sm-10" style="width: 300px;">
-									<input type="text" class="form-control" id="create-nextContactTime">
+									<input type="text" class="form-control time" id="create-nextContactTime">
 								</div>
 							</div>
 						</div>
@@ -189,7 +270,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="SaveClueBtn">保存</button>
 				</div>
 			</div>
 		</div>
@@ -352,41 +433,32 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">名称</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="select-name">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">公司</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="select-company">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">公司座机</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="select-phone">
 				    </div>
 				  </div>
 				  
-				  <div class="form-group">
-				    <div class="input-group">
-				      <div class="input-group-addon">线索来源</div>
-					  <select class="form-control">
-						  <c:forEach items="${applicationScope.source}" var="source">
-							  <option value="${source.value}">${source.text}</option>
-						  </c:forEach>
-					  </select>
-				    </div>
-				  </div>
+
 				  
 				  <br>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">所有者</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="select-owner">
 				    </div>
 				  </div>
 				  
@@ -395,22 +467,12 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">手机</div>
-				      <input class="form-control" type="text">
-				    </div>
-				  </div>
-				  
-				  <div class="form-group">
-				    <div class="input-group">
-				      <div class="input-group-addon">线索状态</div>
-					  <select class="form-control">
-						  <c:forEach items="${applicationScope.clueState}" var="clueState">
-							  <option value="${clueState.value}">${clueState.text}</option>
-						  </c:forEach>
-					  </select>
+				      <input class="form-control" type="text" id="select-mphone">
 				    </div>
 				  </div>
 
-				  <button type="submit" class="btn btn-default">查询</button>
+
+				  <button type="submit" class="btn btn-default" id="selectBtn">查询</button>
 				  
 				</form>
 			</div>
@@ -437,27 +499,17 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							<td>线索状态</td>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="tbody">
 						<tr>
 							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/clue/detail.jsp';">李四先生</a></td>
-							<td>动力节点</td>
+							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/clue/detail.jsp';">马化腾先生</a></td>
+							<td>腾讯</td>
 							<td>010-84846003</td>
 							<td>12345678901</td>
 							<td>广告</td>
 							<td>zhangsan</td>
 							<td>已联系</td>
 						</tr>
-                        <tr class="active">
-                            <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/clue/detail.jsp';">李四先生</a></td>
-                            <td>动力节点</td>
-                            <td>010-84846003</td>
-                            <td>12345678901</td>
-                            <td>广告</td>
-                            <td>zhangsan</td>
-                            <td>已联系</td>
-                        </tr>
 					</tbody>
 				</table>
 			</div>

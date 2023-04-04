@@ -26,4 +26,8 @@ public interface ActivityService {
     Map<String, Object> SavaAndSelectRemark(activity_remark remarks);
 
     boolean updateRemark(activity_remark remark1);
+
+    List<activity> sele(String id);
+
+    List<activity> selectActivityLikeNotById(String cid, String text);
 }

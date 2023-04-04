@@ -1,0 +1,15 @@
+$.ajax({
+				url:"",
+				type: "GET",
+				dataType: "JSON",
+				data:{
+				},
+				success:function (data) {
+
+			}
+})
+
+
+ClueService service= (ClueService) ServiceFactory.getService(new clueServiceImpl());
+
+SqlSessionUtils.getSessiom().getMapper(ClueMapper.class);

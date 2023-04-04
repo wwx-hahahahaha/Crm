@@ -2,7 +2,7 @@ package com.rose.workbench.domain;
 
 public class activity {
     private String  id ;//主键
-    private String  owner;//所有者 外键n
+    private String  owner;//所有者 外键
     private String  name;//市场活动名称
     private String  startDate;//开始日期  年月日
     private String  endDate;//结束日期  年月日

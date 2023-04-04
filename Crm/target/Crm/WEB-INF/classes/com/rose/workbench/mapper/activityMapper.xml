@@ -20,7 +20,8 @@
             cost=#{cost},
             editBy=#{editBy},
             editTime=#{editTime},
-            description=#{description} where id=#{id};
+            description=#{description}
+        where id = #{id};
     </update>
 
 
@@ -79,16 +80,44 @@
     </select>
 
 
-
     <select id="seleActitityByid" resultType="com.rose.workbench.domain.activity">
-        select * from tbl_activity where id=#{id}
+        select *
+        from tbl_activity
+        where id = #{id}
     </select>
 
 
     <select id="seleActitityByidTwo" resultType="com.rose.workbench.domain.activity">
-        select a.id,u.name as owner,a.name,a.startDate,a.endDate,a.cost,a.createBy,
-               a.createTime,a.editBy,a.editTime,a.description
-        from tbl_activity a inner join tbl_user u on a.owner=u.id where a.id=#{id}
+        select a.id,
+               u.name as owner,
+               a.name,
+               a.startDate,
+               a.endDate,
+               a.cost,
+               a.createBy,
+               a.createTime,
+               a.editBy,
+               a.editTime,
+               a.description
+        from tbl_activity a
+                 inner join tbl_user u on a.owner = u.id
+        where a.id = #{id}
+    </select>
+    <select id="sele" resultType="com.rose.workbench.domain.activity">
+        select a.id, a.name, a.startDate, a.endDate, u.name as owner
+        from tbl_activity a
+                 inner join tbl_user u on a.owner = u.id
+        where a.id  in
+              (select activityId from tbl_clue_activity_relation where clueId = #{cid})
+    </select>
+
+
+    <select id="selectActivityLikeNotById" resultType="com.rose.workbench.domain.activity">
+        select a.id, a.name, a.startDate, a.endDate, u.name as owner
+        from tbl_activity a
+                 inner join tbl_user u on a.owner = u.id
+        where a.name like '%' #{name} '%' and a.id not in
+        (select activityId from tbl_clue_activity_relation where clueId =#{cid})
     </select>
 
 

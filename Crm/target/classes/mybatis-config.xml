@@ -4,11 +4,17 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <properties resource="jdbc.properties"/>
+
+
+
     <settings>
         <setting name="logImpl" value="STDOUT_LOGGING" />
     </settings>
+
+    
     <typeAliases>
         <package name="com.rose.settings.domain"/>
+        <package name="com.rose.workbench.domain"/>
     </typeAliases>
 
     <environments default="development">
@@ -26,6 +32,8 @@
         <mapper resource="com/rose/settings/mapper/usermapper.xml"/>
         <mapper resource="com/rose/settings/mapper/dictypemapper.xml"/>
         <mapper resource="com/rose/settings/mapper/dicvalueMapper.xml"/>
+
+
         <!--        <package name="com.rose.settings.mapper"/>-->
         <package name="com.rose.workbench.mapper"/>
 <!--        <mapper resource="com/rose/workbench/mapper/activityMapper.xml"/>-->

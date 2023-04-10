@@ -26,4 +26,6 @@ public interface activityMapper {
     List<activity> sele(String id);
 
     List<activity> selectActivityLikeNotById(@Param("cid") String cid, @Param("name") String text);
+
+    List<activity> selectActivityLikeById(String name);
 }

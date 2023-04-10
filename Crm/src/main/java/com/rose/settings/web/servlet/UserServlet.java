@@ -17,10 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 //@WebServlet("/settings/user/seleone.do")
 public class UserServlet extends HttpServlet {
@@ -63,6 +60,17 @@ public class UserServlet extends HttpServlet {
             for (String s : set) {
                 this.getServletContext().setAttribute(s,selevalue.get(s));
             }
+
+            Map<String,String>map1=new HashMap<>();
+            ResourceBundle bundle = ResourceBundle.getBundle("Stage2Possibility");
+            Enumeration<String> keys = bundle.getKeys();
+            while (keys.hasMoreElements()){
+                String key = keys.nextElement();
+                String value = bundle.getString(key);
+                map1.put(key,value);
+            }
+            this.getServletContext().setAttribute("pMap",map1);
+
             //登录成功将user保存到session域中
                 request.getSession().setAttribute("user",user);
                 //将要响应给前面的数据true封装到map集合里面

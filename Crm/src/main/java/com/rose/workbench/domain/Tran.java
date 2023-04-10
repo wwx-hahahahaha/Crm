@@ -20,7 +20,18 @@ public class Tran {
 	private String description;
 	private String contactSummary;	//联系纪要
 	private String nextContactTime;	//下次联系时间
-	
+
+	//这是可能性这个属性，定义在这便于将参数一并传给前端
+	private String map;
+
+	public String getMap() {
+		return map;
+	}
+
+	public void setMap(String map) {
+		this.map = map;
+	}
+
 	public String getId() {
 		return id;
 	}

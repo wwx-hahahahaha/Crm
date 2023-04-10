@@ -6,6 +6,6 @@
 
 
     <select id="sele" resultType="com.rose.settings.domain.dicValue">
-        select * from tbl_dic_value where typeCode=#{name};
+        select * from tbl_dic_value where typeCode=#{name} order by orderNo;
     </select>
 </mapper>

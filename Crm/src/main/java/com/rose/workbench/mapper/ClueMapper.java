@@ -18,5 +18,7 @@ public interface ClueMapper {
     Clue selectClueById(String id);
 
     List<activity> selectActivityNId(String cid);
+
+    int delete(String cid);
 }
 

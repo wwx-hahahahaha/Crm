@@ -57,5 +57,26 @@
     <url-pattern>/workbench/clue/selectActivityNotById.do</url-pattern>
     <url-pattern>/workbench/clue/saveActivityRelation.do</url-pattern>
     <url-pattern>/workbench/clue/selectActivityLikeNotById.do</url-pattern>
+    <url-pattern>/workbench/clue/selectActivityLikeById.do</url-pattern>
+    <url-pattern>/workbench/clue/convert.do</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>TranController</servlet-name>
+    <servlet-class>com.rose.workbench.web.servlet.TranServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>TranController</servlet-name>
+    <url-pattern>/workbench/transaction/add.do</url-pattern>
+    <url-pattern>/workbench/transaction/activityLike.do</url-pattern>
+    <url-pattern>/workbench/transaction/ContactLike.do</url-pattern>
+    <url-pattern>/workbench/transaction/getCustomerName.do</url-pattern>
+    <url-pattern>/workbench/transaction/SaveTran.do</url-pattern>
+    <url-pattern>/workbench/transaction/getTrans.do</url-pattern>
+    <url-pattern>/workbench/transaction/getTranByid.do</url-pattern>
+    <url-pattern>/workbench/transaction/getTranHistory.do</url-pattern>
+    <url-pattern>/workbench/transaction/UpdateTran.do</url-pattern>
+  </servlet-mapping>
+
 </web-app>

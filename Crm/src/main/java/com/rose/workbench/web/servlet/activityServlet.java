@@ -250,4 +250,5 @@ public class activityServlet extends HttpServlet {
         String s = JSON.toJSONString(users);
         response.getWriter().write(s);
     }
+
 }

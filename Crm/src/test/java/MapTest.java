@@ -15,7 +15,7 @@ public class MapTest {
     @Test
     public void Nun(){
        ActivityService service = (ActivityService) ServiceFactory.getService(new activityServiceImpl());
-//        List<activity> map= service.sele();
-//        System.out.println(map);
+        List<activity> list = service.selectActivityLikeById("3");
+        System.out.println(list);
     }
 }

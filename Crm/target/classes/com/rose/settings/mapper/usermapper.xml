@@ -9,5 +9,8 @@
     <select id="seleuser" resultType="user">
         select * from tbl_user where loginAct=#{name} and loginPwd=MD5(#{password});
     </select>
+    <select id="selectOwner" resultType="com.rose.settings.domain.user">
+        select * from tbl_user where name=#{name};
+    </select>
 
 </mapper>

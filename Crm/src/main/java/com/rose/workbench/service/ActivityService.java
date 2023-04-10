@@ -30,4 +30,6 @@ public interface ActivityService {
     List<activity> sele(String id);
 
     List<activity> selectActivityLikeNotById(String cid, String text);
+
+    List<activity> selectActivityLikeById(String name);
 }

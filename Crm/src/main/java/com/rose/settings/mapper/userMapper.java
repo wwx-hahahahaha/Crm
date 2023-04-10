@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
-import java.util.Map;
 
 public interface userMapper {
     user seleuser(@Param("name")String name,@Param("password")String pwd);
@@ -13,4 +12,5 @@ public interface userMapper {
     @Select("select * from tbl_user ")
     List<user>seleone();
 
+    user selectOwner(String owner);
 }

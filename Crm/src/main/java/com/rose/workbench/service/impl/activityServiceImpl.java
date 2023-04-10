@@ -139,5 +139,12 @@ public class activityServiceImpl implements ActivityService {
         return list;
     }
 
+    @Override
+    public List<activity> selectActivityLikeById(String name) {
+
+        List<activity> list=mapper.selectActivityLikeById(name);
+        return list;
+    }
+
 
 }

@@ -9,7 +9,18 @@ public class TranHistory {
 	private String createTime;
 	private String createBy;
 	private String tranId;
-	
+
+	//交易这条线索,添加到这个里面,方便传到前端
+	private String Kn;
+
+	public String getKn() {
+		return Kn;
+	}
+
+	public void setKn(String kn) {
+		Kn = kn;
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -53,6 +64,17 @@ public class TranHistory {
 		this.tranId = tranId;
 	}
 
-	
-	
+	@Override
+	public String toString() {
+		return "TranHistory{" +
+				"id='" + id + '\'' +
+				", stage='" + stage + '\'' +
+				", money='" + money + '\'' +
+				", expectedDate='" + expectedDate + '\'' +
+				", createTime='" + createTime + '\'' +
+				", createBy='" + createBy + '\'' +
+				", tranId='" + tranId + '\'' +
+				", Kn='" + Kn + '\'' +
+				'}';
+	}
 }

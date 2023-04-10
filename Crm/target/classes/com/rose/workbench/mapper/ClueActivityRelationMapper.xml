@@ -19,6 +19,12 @@
                      where activityId = #{aid}
                        and clueId = #{cid}) as a);
     </delete>
+    <delete id="delete">
+        delete from tbl_clue_activity_relation where id=#{id}
+    </delete>
+    <select id="selectByCid" resultType="com.rose.workbench.domain.ClueActivityRelation">
+        select * from tbl_clue_activity_relation where clueId=#{cid};
+    </select>
 </mapper>
 
 

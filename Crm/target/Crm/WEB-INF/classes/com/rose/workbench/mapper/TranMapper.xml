@@ -1,11 +1,65 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.rose.workbench.mapper.TranMapper">
-	
-  	
+
+
+    <insert id="Save">
+        insert into tbl_tran(id,
+                             owner,
+                             money,
+                             name,
+                             expectedDate,
+                             customerId,
+                             stage,
+                             type,
+                             source,
+                             activityId,
+                             contactsId,
+                             createBy,
+                             createTime,
+                             description,
+                             contactSummary,
+                             nextContactTime)
+        values (#{id},
+               #{owner},
+               #{money},
+               #{name},
+               #{expectedDate},
+               #{customerId},
+               #{stage},
+               #{type},
+               #{source},
+               #{activityId},
+               #{contactsId},
+               #{createBy},
+               #{createTime},
+               #{description},
+               #{contactSummary},
+               #{nextContactTime})
+    </insert>
+    <update id="update">
+        update tbl_tran set stage=#{stage},editBy=#{editBy},editTime=#{editTime} where id=#{id}
+    </update>
+
+    <select id="getTran" resultType="com.rose.workbench.domain.Tran">
+        select tran.id,tran.name,cust.name as customerId,tran.stage,tran.type,user.name as owner,tran.source,cont.fullname as contactsId
+        from tbl_tran tran left join tbl_user user on tran.owner=user.id
+            left join tbl_customer cust on tran.customerId=cust.id
+            left join tbl_contacts cont on tran.contactsId=cont.id;
+    </select>
+    <select id="getTranByid" resultType="com.rose.workbench.domain.Tran">
+        select tran.id,tran.money,tran.name,cust.name as customerId,tran.stage,tran.type,tran.createTime,tran.createBy,
+               tran.description,tran.nextContactTime,tran.contactSummary,tran.expectedDate,
+               user.name as owner,tran.source,cont.fullname as contactsId,act.name as activityId
+        from tbl_tran tran left join tbl_user user on tran.owner=user.id
+            left join tbl_customer cust on tran.customerId=cust.id
+            left join tbl_contacts cont on tran.contactsId=cont.id
+            left join tbl_activity act on tran.activityId=act.id
+        where tran.id=#{id};
+    </select>
 </mapper>
 
 

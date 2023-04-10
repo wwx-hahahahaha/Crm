@@ -4,11 +4,9 @@ import com.alibaba.fastjson2.JSON;
 import com.rose.settings.domain.user;
 import com.rose.settings.service.impl.userServiceImpl;
 import com.rose.settings.service.userServlce;
-import com.rose.utils.DateTimeUtil;
-import com.rose.utils.ResponseJson;
-import com.rose.utils.ServiceFactory;
-import com.rose.utils.UUIDUtil;
+import com.rose.utils.*;
 import com.rose.workbench.domain.Clue;
+import com.rose.workbench.domain.Tran;
 import com.rose.workbench.domain.activity;
 import com.rose.workbench.service.ActivityService;
 import com.rose.workbench.service.ClueService;
@@ -19,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -46,11 +45,64 @@ public class ClueServlet extends HttpServlet {
             saveActivityRelation(request,response);
         } else if ("/workbench/clue/selectActivityLikeNotById.do".equals(path)) {
             selectActivityLikeNotById(request,response);
+        } else if ("/workbench/clue/selectActivityLikeById.do".equals(path)) {
+            selectActivityLikeById(request,response);
+        } else if ("/workbench/clue/convert.do".equals(path)) {
+            Convert(request,response);
         }
     }
 
     /**
-     * 搜索框模糊查询
+     * 线索转业务
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    private void Convert(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String cid = request.getParameter("cid");
+        String a = request.getParameter("a");
+        String createBy=((user)request.getSession().getAttribute("user")).getName();
+        Tran tran=null;
+        if ("a".equals(a)){
+             tran=new Tran();
+            String data = request.getParameter("data");
+            String stage = request.getParameter("stage");
+            String money = request.getParameter("money");
+            String name = request.getParameter("name");
+            String aname = request.getParameter("aname");
+            String aid = request.getParameter("aid");
+
+
+            tran.setActivityId(aid);
+            tran.setName(name);
+            tran.setMoney(money);
+            tran.setExpectedDate(data);
+            tran.setStage(stage);
+            tran.setId(UUIDUtil.getUUID());
+            tran.setCreateTime(DateTimeUtil.getSysTime());
+            tran.setCreateBy(createBy);
+        }
+        ClueService service = (ClueService) ServiceFactory.getService(new clueServiceImpl());
+        boolean bol=service.convert(tran,cid,createBy);
+        if (bol){
+            response.sendRedirect(request.getContextPath()+"/workbench/clue/index.jsp");
+        }
+    }
+
+    /**
+     * 线索转换搜索框模糊查询
+     * @param request
+     * @param response
+     */
+    private void selectActivityLikeById(HttpServletRequest request, HttpServletResponse response) {
+        String name = request.getParameter("name");
+        ActivityService service = (ActivityService) ServiceFactory.getService(new activityServiceImpl());
+        List<activity> list=service.selectActivityLikeById(name);
+        ResponseJson.JsonSend(list,response);
+    }
+
+    /**
+     * 关联市场活动搜索框模糊查询
      * @param request
      * @param response
      */

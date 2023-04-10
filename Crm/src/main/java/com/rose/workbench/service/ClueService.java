@@ -1,6 +1,7 @@
 package com.rose.workbench.service;
 
 import com.rose.workbench.domain.Clue;
+import com.rose.workbench.domain.Tran;
 import com.rose.workbench.domain.activity;
 
 import java.util.List;
@@ -19,6 +20,9 @@ public interface ClueService {
     List<activity> selectActivityNId(String cid);
 
     int SaveActivityRelation(String[] ids, String cid);
+
+
+    boolean convert(Tran tran, String cid, String createBy);
 
 
 }

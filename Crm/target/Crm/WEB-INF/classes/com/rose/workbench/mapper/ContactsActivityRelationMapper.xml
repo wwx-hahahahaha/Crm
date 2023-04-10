@@ -4,8 +4,11 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.rose.workbench.mapper.ContactsActivityRelationMapper">
-	
-  	
+
+
+    <insert id="Save">
+        insert into tbl_contacts_activity_relation values (#{id},#{contactsId},#{activityId});
+    </insert>
 </mapper>
 
 

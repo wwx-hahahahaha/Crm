@@ -29,6 +29,9 @@
             #{nextContactTime},
             #{address});
     </insert>
+    <delete id="delete">
+        delete from tbl_clue where id=#{id}
+    </delete>
     <select id="selectClue" resultType="com.rose.workbench.domain.Clue">
         select c.id,c.fullname,c.company,c.phone,c.mphone,c.source,u.name as owner,c.state
         from tbl_clue c inner join tbl_user u on c.owner=u.id
